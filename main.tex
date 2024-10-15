@@ -199,7 +199,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Discontinuous Galerkin (DG) Method}
+\frametitle{DG(2)}
 
   \begin{figure}[htb!]
     \centering
@@ -258,9 +258,61 @@
 \begin{frame}
 \frametitle{Troubled Cell Indicator}
 
+  Proposed in \citet{fs2017}
+
   \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.9\textwidth]{fig.TCI.png}
+    \includegraphics[width=0.7\textwidth]{fig.TCI.png}
+  \end{figure}
+
+\end{frame}
+
+\newcommand{\lbel}{\Lambda_{\textsc{bel}}}
+\begin{frame}
+\frametitle{Bound-Enforcing Limiter ($\lbel$)}
+
+  \begin{itemize}
+    \item
+      Proposed in \citet{qsy2016}
+    \item
+      Define $\mathcal{G}$ as the (convex) set of physically-admissible states
+      when using an ideal EoS
+      (positivity density and energy density, subluminal fluid velocity)
+  \end{itemize}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \filldraw[color=black,fill=cyan!20,very thick] %
+       (0,0) ellipse (1.5 and 1.0) %
+        node at (-1,0.2) {\large $\mathcal{G}$};
+      \filldraw[black] (-0.5,0) circle (1pt) %
+        node at (-0.7,-0.2) {$\bar{u}$};
+      \filldraw[black] (1.5,-0.5) circle (1pt) %
+        node at (1.7,-0.7) {$u_{1}$};
+      \filldraw[black] (0.8,0.3) circle (1pt) %
+        node at (0.6,0.5) {$u_{2}$};
+      \draw node at (0.0,-1.5) %
+        {$u_{h} = u_{1} \, \ell_{1} + u_{2} \, \ell_{2}$};
+      \draw[thick,->] (2.4,0.0) -- (5.0,0.0) %
+        node at (3.8,0.2) {$\lbel$};
+      \filldraw[color=black,fill=cyan!20, very thick] %
+        (7,0) ellipse (1.5 and 1.0) %
+        node at (6,0.2) {\large $\mathcal{G}$};
+      \filldraw[black] (6.5,0) circle (1pt) %
+        node at (6.3,-0.2) {$\bar{u}$};
+      \filldraw[black,opacity=0.5] (8.5,-0.5) circle (1pt) %
+        node at (8.7,-0.7) {$u_{1}$};
+      \filldraw[black] (8.2,-0.45) circle (1pt) %
+        node at (8.0,-0.45) {$\tilde{u}_{1}$};
+      \filldraw[black,opacity=0.5] (7.8,0.3) circle (1pt) %
+        node at (7.6,0.5) {$u_{2}$};
+      \filldraw[black] (7.4,0.2) circle (1pt) %
+        node at (7.2,0.4) {$\tilde{u}_{2}$};
+      \draw node at (7.0,-1.5) %
+        {$\tilde{u}_{h} := \lbel\left(u_{h}\right)
+        = \tilde{u}_{1} \, \ell_{1} + \tilde{u}_{2} \, \ell_{2}$};
+    \end{tikzpicture}
   \end{figure}
 
 \end{frame}
@@ -268,8 +320,8 @@
 \begin{frame}
 \frametitle{Standing Accretion Shock Instability}
 
-  Used \thornado{} to investigate the role of GR on the SASI%
-  \footnote{\citet{dem2020,dem2023}}
+  Used \thornado\ to investigate the role of GR on the SASI%
+  \footnote{\citet{dem2020,dem2024}}
 
   \begin{columns}[c]
 
@@ -292,7 +344,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Mesh Refinement}
+\frametitle{Mesh Refinement with AMReX}
 
   \begin{figure}[htb!]
     \centering
@@ -311,7 +363,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Adiabatic Collapse (AMR, Collapse Phase)}
+\frametitle{Adiabatic Collapse (Collapse Phase)}
 
   \begin{figure}[htb!]
     \centering
@@ -321,7 +373,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Adiabatic Collapse (AMR, Post-Bounce Phase)}
+\frametitle{Adiabatic Collapse (Post-Bounce Phase)}
 
   \begin{figure}[htb!]
     \centering
@@ -333,7 +385,7 @@
 \begin{frame}
 \frametitle{Bibliography}
 
-  \Fontvi
+  \Fontvii
   \bibliography{bibfile.bib}
 
 \end{frame}
@@ -344,7 +396,7 @@
   \begin{tabular}{cl}
     \begin{tabular}{l}
       \parbox{0.7\linewidth}%
-      {Can run pure hydro problems in GR with AMR}
+      {Can run multi-D pure hydro problems in GR with AMR}
     \end{tabular}
     \begin{tabular}{c}
       \includegraphics[width=0.15\textwidth]{fig.KHI.pdf}
@@ -357,19 +409,13 @@
     \end{tabular}
     \begin{tabular}{l}
       \parbox{0.7\linewidth}%
-      {Can run hydro+self-gravity problems in GR with AMR}
+      {Can run 1D hydro+self-gravity problems in GR with AMR}
     \end{tabular}
   \end{tabular}
 
-  \begin{tabular}{cl}
-    \begin{tabular}{l}
-      \parbox{0.7\linewidth}%
-      {Working on coupling GR transport to existing hydro+gravity modules}
-    \end{tabular}
-    \begin{tabular}{c}
-      \includegraphics[width=0.2\textwidth]{fig.PostBounce.png}
-    \end{tabular}
-  \end{tabular}
+  \vspace{1em}
+
+  Working on coupling GR transport to existing hydro+gravity modules
 
 \end{frame}
 

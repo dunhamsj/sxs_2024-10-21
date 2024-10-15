@@ -27,7 +27,7 @@ def plotBase( fig, ax ):
         xx += dx
 
     ax.set_xlim( -0.1, 1.1 )
-
+    ax.set_ylim( 0.89, 1.11 )
 
 fig, ax = plt.subplots()
 plotBase( fig, ax )
@@ -100,7 +100,7 @@ for i in range( len( N ) ):
         plotBase( fig, ax )
 
         rect = patches.Rectangle \
-                 ( (0.59,0.89), 0.22, 0.05, \
+                 ( (0.59,0.895), 0.22, 0.05, \
                    linewidth = 2, edgecolor = 'r', facecolor = 'none' )
         ax.add_patch(rect)
 
