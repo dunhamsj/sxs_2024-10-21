@@ -1,0 +1,367 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------------%
+%	PACKAGES AND THEMES
+%------------------------------------------------------------------------------%
+
+\documentclass{beamer}
+
+\input{preamble.tex}
+\input{customCommands.tex}
+
+% --- TITLE PAGE SLIDE ---
+
+\title[SXS Group Meeting]{\thornado-Hydro (xCFC)}
+
+\author{Samuel J. Dunham}
+\date{October 21, 2024}
+
+\begin{document}
+
+\begin{frame}
+
+  \maketitle
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.3\textwidth]{fig.thornado_logo.png}
+  \end{figure}
+
+  \begin{center}
+
+    \ul{t}oolkit for
+    \ul{h}igh-\ul{or}der
+    \ul{n}eutrino-r\ul{ad}iation hydr\ul{o}dynamics\\[1em]
+
+  \end{center}
+
+  \begin{columns}[c]
+
+    \column{0.5\textwidth}
+
+      \begin{itemize}
+        \item
+          DG
+        \item
+          SSPRK/IMEX
+        \item
+          GR (xCFC)
+        \item
+          Hydro\footnote{\citet{ebd2019,dem2020,pbe2021}}
+          (Valencia)
+        \item
+          Neutrino transport\footnote{\citet{lec2021}} (M1)
+        \item
+          Interfaces to tabulated EoS/Opacities
+          (weaklib: \url{https://github.com/starkiller-astro/weaklib})
+      \end{itemize}
+
+    \column{0.5\textwidth}
+
+      \vspace{-6em}
+      \begin{itemize}
+        \item
+          Fluid self-gravity via \poseidon:
+          \url{https://github.com/jrober50/Poseidon}
+        \item
+          GPUs via OpenACC or OpenMP pragmas
+        \item
+          MPI parallelism and AMR via \amrex:
+          \url{https://github.com/AMReX-Codes/amrex}
+      \end{itemize}
+
+  \end{columns}
+
+\end{frame}
+
+\section{Mathematical Model}
+
+\begin{frame}
+\frametitle{3+1 Decomposition}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.1p1.png}
+  \end{figure}
+
+  \vspace{-2em}
+
+  \begin{equation*}
+    ds^{2}
+    =g_{\mu\nu}\,dx^{\mu}\,dx^{\nu}
+    =-\alpha^{2}\,dt^{2}
+     +\gamma_{ij}\left(dx^{i}+\beta^{i}\,dt\right)
+                 \left(dx^{j}+\beta^{j}\,dt\right)
+  \end{equation*}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Conformally-Flat Condition}
+
+  \begin{columns}[c]
+
+    \column{.5\textwidth}
+
+      Developed by \citet{wmm1996}, extended by \citet{cc2009}
+
+      \begin{align*}
+        \gamma_{ij}\left(x\right)
+        &=\psi^{4}\left(x\right)\,\overline{\gamma}_{ij}\left(x^{i}\right) \\
+        K&=0,\ \p_{t}\,K=0 \\
+        &\hspace{-3em}\mathrm{(Always\ and\ everywhere)}
+      \end{align*}\vspace{1em}
+
+      \begin{itemize}
+        \item Exact in spherical symmetry!
+        \item Hyperbolic $\rightarrow$ Elliptic equations
+        \item Good for long-time simulations
+      \end{itemize}
+
+    \column{.5\textwidth}
+
+      Special case: Schwarzchild spacetime in isotropic coordinates
+      ($G=c=1$)
+
+      \begin{align*}
+        \alpha
+          &=\left(1+\frac{1}{2}\,\Phi\right)
+            \left(1-\frac{1}{2}\,\Phi\right)^{-1} \\
+        \psi
+          &=1-\frac{1}{2}\,\Phi \\
+        \beta^{i}
+          &=0,
+      \end{align*}
+      with
+      \begin{equation*}
+        \Phi\left(r\right):=-\frac{M}{r}
+      \end{equation*}
+
+  \end{columns}
+
+\end{frame}
+
+\section{Numerical Methods}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.sine.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.sine_k0.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.sine_k1.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.sine_k2.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.sine_k2_box.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Discontinuous Galerkin (DG) Method}
+
+  \Fontvi
+
+  \begin{equation*}
+    u_{h}\left(x,t\right)
+    :=\sum\limits_{i=1}^{k+1}
+      u_{i}\left(t\right)\,\ell_{i}\left(x\right)
+  \end{equation*}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.DG_1D.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig.ConvergenceRates.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Slope Limiter}
+
+  \Fontvi
+  \begin{equation*}
+  u_{h}\left(x,t\right)
+  =\sum\limits_{n=1}^{N}
+  C_{n}\left(t\right)\,P_{n}\left(x\right)\implies
+  \tilde{u}_{h}\left(x,t\right)
+  =C_{1}\left(t\right)\,P_{1}\left(x\right)
+  +\tilde{C}_{2}\left(t\right)\,P_{2}\left(x\right)
+  \end{equation*}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{fig.MinMod.jpeg}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Standing Accretion Shock Instability}
+
+  Used \thornado{} to investigate the role of GR on the SASI%
+  \footnote{\citet{dem2020,dem2023}}
+
+  \begin{columns}[c]
+
+    \column{.6\textwidth}
+
+      \begin{figure}[htb!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig.sasi.png}
+      \end{figure}
+
+    \column{.4\textwidth}
+
+      \begin{figure}[htb!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig.sasi_GRvNR.pdf}
+      \end{figure}
+
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Mesh Refinement}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.MeshRefinement_2D.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Kelvin--Helmholtz Instability}
+
+  \begin{center}
+    {\includegraphics[width=0.6\textwidth]{fig.KHI.pdf}}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Adiabatic Collapse (AMR, Collapse Phase)}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig.collapse.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Adiabatic Collapse (AMR, Post-Bounce Phase)}
+
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{fig.postBounce.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Bibliography}
+
+  \Fontvi
+  \bibliography{bibfile.bib}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Summary}
+
+  \begin{tabular}{cl}
+    \begin{tabular}{l}
+      \parbox{0.7\linewidth}%
+      {Can run pure hydro problems in GR with AMR}
+    \end{tabular}
+    \begin{tabular}{c}
+      \includegraphics[width=0.15\textwidth]{fig.KHI.pdf}
+    \end{tabular}
+  \end{tabular}
+
+  \begin{tabular}{cl}
+    \begin{tabular}{c}
+      \includegraphics[width=0.2\textwidth]{fig.Collapse.png}
+    \end{tabular}
+    \begin{tabular}{l}
+      \parbox{0.7\linewidth}%
+      {Can run hydro+self-gravity problems in GR with AMR}
+    \end{tabular}
+  \end{tabular}
+
+  \begin{tabular}{cl}
+    \begin{tabular}{l}
+      \parbox{0.7\linewidth}%
+      {Working on coupling GR transport to existing hydro+gravity modules}
+    \end{tabular}
+    \begin{tabular}{c}
+      \includegraphics[width=0.2\textwidth]{fig.PostBounce.png}
+    \end{tabular}
+  \end{tabular}
+
+\end{frame}
+
+\end{document}
+%------------------------------------------------------------------------------%
