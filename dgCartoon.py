@@ -2,7 +2,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
 plt.style.use( 'publication.sty' )
 plt.rcParams.update({
 'text.latex.preamble': r'\usepackage{amsfonts}'})
@@ -11,9 +10,14 @@ import matplotlib.patches as patches
 from gaussxw import gaussxw
 from dgUtilities import *
 
-xExact = np.linspace( 0.0, 1.0, 100 )
-x      = np.linspace( 0.0, 1.0, 5 )
+xL = 0.0
+xH = 1.0
+xExact = np.linspace( xL, xH, 100 )
+x      = np.linspace( xL, xH, 5 )
 dx     = ( x[-1] - x[0] ) / np.float64( x.shape[0] )
+
+def rhoExact( x ):
+    return 1.0 + 0.1 * np.sin( 2.0 * np.pi * x )
 
 def plotBase( fig, ax ):
 
@@ -47,7 +51,7 @@ def plotDensity( N, x, fig, ax, vmin, vmax, vmid, c ):
 
     intU = np.empty( N, np.float64 )
 
-    xl = 0.0
+    xl = xL
     xh = xl + dx
 
     for iX1 in range( x.shape[0] ):

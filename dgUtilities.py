@@ -16,6 +16,21 @@ def Lagrange( x, xq, i ):
 
     return L
 
+def Legendre( x, n ):
+
+    L = 1.0
+
+    y = 2.0 * x
+
+    if   ( n == 0 ) :
+        L = np.ones( y.shape[0] )
+    elif ( n == 1 ) :
+        L = np.sqrt( 3.0 ) * y
+    elif ( n == 2 ) :
+        L = np.sqrt( 5.0 ) * ( 3.0 * y**2 - 1.0 ) / 2.0
+
+    return L
+
 def rhoh( x, rho_q, xq ):
 
     N = xq.shape[0]
@@ -36,12 +51,11 @@ def ComputeMassMatrix( N, NN ):
     for i in range( N ):
         for j in range( N ):
 
-            Li = np.array( [ Lagrange( xqNN[q], xqN, i ) for q in range( NN ) ] )
-            Lj = np.array( [ Lagrange( xqNN[q], xqN, j ) for q in range( NN ) ] )
+            Li \
+              = np.array( [ Lagrange( xqNN[q], xqN, i ) for q in range( NN ) ] )
+            Lj \
+              = np.array( [ Lagrange( xqNN[q], xqN, j ) for q in range( NN ) ] )
 
             M[i,j] = np.sum( wqNN * Li * Lj )
 
     return M
-
-def rhoExact( x ):
-    return 1.0 + 0.1 * np.sin( 2.0 * np.pi * x )
