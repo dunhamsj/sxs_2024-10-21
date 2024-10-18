@@ -161,49 +161,19 @@
 \begin{frame}
 \frametitle{Discontinuous Galerkin (DG) Method}
 
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.sine.png}
-  \end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Finite-volume/DG(0)}
-
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.sine_k0.png}
-  \end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{DG(1)}
-
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.sine_k1.png}
-  \end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{DG(2)}
-
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.sine_k2.png}
-  \end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{DG(2)}
-
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.sine_k2_box.png}
+  \begin{figure}
+    \begin{overprint}
+      \onslide<1>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sine.png}
+      \onslide<2>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sine_k0.png}
+      \onslide<3>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sine_k1.png}
+      \onslide<4>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sine_k2.png}
+      \onslide<5>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sine_k2_box.png}
+    \end{overprint}
   \end{figure}
 
 \end{frame}
@@ -235,22 +205,47 @@
 
 \end{frame}
 
+%\begin{frame}
+%\frametitle{Slope Limiter (MinMod)}
+%
+%  \centering
+%  \animategraphics[width=0.8\textwidth,step,controls] %
+%  {1}{fig.sl_0}{0}{7}
+%
+%\end{frame}
+
 \begin{frame}
 \frametitle{Slope Limiter (MinMod)}
 
-  \Fontvi
-  \begin{equation*}
-  u_{h}\left(x,t\right)
-  =\sum\limits_{n=1}^{N}
-  C_{n}\left(t\right)\,P_{n}\left(x\right)\implies
-  \tilde{u}_{h}\left(x,t\right)
-  =C_{1}\left(t\right)\,P_{1}\left(x\right)
-  +\tilde{C}_{2}\left(t\right)\,P_{2}\left(x\right)
-  \end{equation*}
-
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.6\textwidth]{fig.MinMod.jpeg}
+  \begin{figure}
+    \begin{overprint}
+      \onslide<1>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sl_01.png}
+      \onslide<2>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sl_02.png}
+      \onslide<3>
+        $$\bar{u}\left(t\right)
+        := \frac{1}{V\left(t\right)} \,
+        \int_{K} u_{h}\left(x,t\right) \, \sqrt{\gamma}\left(x,t\right) \, dx,
+        \ V\left(t\right) := \int_{K} \sqrt{\gamma}\left(x,t\right) \, dx$$
+        \centering\includegraphics[width=0.7\textwidth]{./fig.sl_03.png}
+      \onslide<4>
+        $$u_{h}\left(x,t\right)
+        = \sum\limits_{i=1}^{k+1} u_{i}\left(t\right) \, \ell_{i}\left(x\right)
+        = \sum\limits_{n=0}^{k} C_{n}\left(t\right) \, P_{n}\left(x\right)$$
+        \centering\includegraphics[width=0.7\textwidth]{./fig.sl_04.png}
+      \onslide<5>
+        $$\textcolor{red}{--:\bar{u}_{K}-\bar{u}_{K-1}}\hspace{2em}
+          \textcolor{blue}{--:\bar{u}_{K+1}-\bar{u}_{K}}$$
+        \centering\includegraphics[width=0.7\textwidth]{./fig.sl_05.png}
+      \onslide<6>
+        $$\sum\limits_{n=1}^{k}C_{n} \, P_{n} = u_{h}
+        \to \tilde{u}_{h} := \Lambda_{\textsc{sl}}\left(u_{h}\right)
+        := C_{0} \, P_{0} + \tilde{C}_{1} \, P_{1}$$
+        \centering\includegraphics[width=0.7\textwidth]{./fig.sl_06.png}
+      \onslide<7>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.sl_07.png}
+    \end{overprint}
   \end{figure}
 
 \end{frame}
@@ -354,6 +349,33 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{Conservative Interpolation (1D)}
+
+  Given a solution in the nodal points of a coarse element $K$,
+  $\left\{U_{j}\right\}_{j=1}^{N}$,
+  define the solution in the nodal points of the $j$th
+  ($j\in\left\{1,2\right\}$)
+  fine element $k^{\left(j\right)}$,
+  $\left\{u_{i}^{\left(j\right)}\right\}_{i=1}^{N}$
+  via the minimization of an $L^{2}$-projection:
+
+  $$\forall i \in \left\{1,\cdots,N\right\}:
+  \min\limits_{\tilde{u}_{i}^{\left(j\right)}}
+  \int_{k^{\left(j\right)}}\left(\tilde{U}_{h}
+  -\tilde{u}_{h}^{\left(j\right)}\right)^{2}dx,$$
+
+  where $\tilde{U} := \sqrt{\gamma} \, U$.
+  For the geometry fields, we use the same procedure but do not pre-multiply
+  with $\sqrt{\gamma}$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Flux Corrections}
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Kelvin--Helmholtz Instability}
 
   \begin{center}
@@ -363,11 +385,25 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{2D Blast Wave \citep{db2002}}
+
+  \begin{center}
+    \includegraphics[width=0.3\textwidth]%
+      {fig.dZB2002_256x256.pdf}\hfill%
+    \includegraphics[width=0.3\textwidth]%
+      {fig.dZB2002_032x032_AMR.pdf}\hfill%
+    \includegraphics[width=0.3\textwidth]%
+      {fig.dZB2002_032x032_AMR_Mesh.pdf}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}
 \frametitle{Adiabatic Collapse (Collapse Phase)}
 
   \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig.collapse.png}
+    \includegraphics[width=0.8\textwidth]{fig.collapse.pdf}
   \end{figure}
 
 \end{frame}
@@ -377,7 +413,7 @@
 
   \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.8\textwidth]{fig.postBounce.png}
+    \includegraphics[width=0.8\textwidth]{fig.postBounce.pdf}
   \end{figure}
 
 \end{frame}

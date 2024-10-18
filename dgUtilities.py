@@ -16,30 +16,35 @@ def Lagrange( x, xq, i ):
 
     return L
 
-def Legendre( x, n ):
+def Legendre( y, n ):
 
-    L = 1.0
+    L = 0.0
 
-    y = 2.0 * x
+    x = 2.0 * y
 
     if   ( n == 0 ) :
-        L = np.ones( y.shape[0] )
+        try:
+            L = np.ones( x.shape[0] )
+        except:
+            L = 1.0
     elif ( n == 1 ) :
-        L = np.sqrt( 3.0 ) * y
+        L = np.sqrt( 3.0 ) * x
     elif ( n == 2 ) :
-        L = np.sqrt( 5.0 ) * ( 3.0 * y**2 - 1.0 ) / 2.0
+        L = np.sqrt( 5.0 ) * ( 3.0 * x**2 - 1.0 ) / 2.0
+    elif ( n == 3 ) :
+        L = np.sqrt( 7.0 ) * ( 5.0 * x**3 - 3.0 * x ) / 2.0
 
     return L
 
-def rhoh( x, rho_q, xq ):
+def uh( x, u_q, xq ):
 
     N = xq.shape[0]
 
-    rho = 0.0
+    u = 0.0
     for i in range( N ):
-        rho += rho_q[i] * Lagrange( x, xq, i )
+        u += u_q[i] * Lagrange( x, xq, i )
 
-    return rho
+    return u
 
 def ComputeMassMatrix( N, NN ):
 

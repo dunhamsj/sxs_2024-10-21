@@ -16,12 +16,12 @@ xExact = np.linspace( xL, xH, 100 )
 x      = np.linspace( xL, xH, 5 )
 dx     = ( x[-1] - x[0] ) / np.float64( x.shape[0] )
 
-def rhoExact( x ):
+def uExact( x ):
     return 1.0 + 0.1 * np.sin( 2.0 * np.pi * x )
 
 def plotBase( fig, ax ):
 
-    ax.plot( xExact, rhoExact( xExact ), 'k-' )
+    ax.plot( xExact, uExact( xExact ), 'k-' )
     ax.set_xlabel( r'$x$' )
     ax.set_ylabel( r'$u$' )
 
@@ -63,24 +63,24 @@ def plotDensity( N, x, fig, ax, vmin, vmax, vmid, c ):
 
         for i in range( N ):
             intU[i] \
-              = np.sum( wqNN * rhoExact( xqNN ) * Lagrange( etaqNN, etaqN, i ) )
+              = np.sum( wqNN * uExact( xqNN ) * Lagrange( etaqNN, etaqN, i ) )
 
-        rho_q = np.dot( np.linalg.inv( M ), intU )
+        u_q = np.dot( np.linalg.inv( M ), intU )
 
         xx = np.linspace( xl, xh, 10 )
-        rho = rhoh( xx, rho_q, xqN )
+        u = uh( xx, u_q, xqN )
 
-        ax.plot( xx , rho * np.ones( xx.shape[0], dtype = np.float64 ), \
+        ax.plot( xx , u * np.ones( xx.shape[0], dtype = np.float64 ), \
                  '-', color = c )
-        ax.plot( xqN, rho_q, 'o', color = c )
+        ax.plot( xqN, u_q, 'o', color = c )
 
         xl += dx
         xh += dx
 
     return
 
-vmin = rhoExact( x.min() )
-vmax = rhoExact( x.max() )
+vmin = uExact( x.min() )
+vmax = uExact( x.max() )
 vmid = 0.5 * ( vmin + vmax )
 
 N = [ 1, 2, 3 ]
