@@ -31,22 +31,22 @@ def plotBase( fig, ax ):
 
     ax.axis( 'off' )
 
-def plotExactSolution( fig, ax, ls1, c1, ls2, c2, ls3, c3 ):
+def plotExactSolution( fig, ax, ls1, c1, ls2, c2, ls3, c3, alpha = 1.0 ):
 
     xl = xL
     xh = xl + dx
     xx = np.linspace( xl, xh, 100 )
-    l1 = ax.plot( xx, uExact( xx ), ls1, color = c1 )
+    l1 = ax.plot( xx, uExact( xx ), ls1, color = c1, alpha = alpha )
 
     xl += dx
     xh += dx
     xx = np.linspace( xl, xh, 100 )
-    l2 = ax.plot( xx, uExact( xx ), ls2, color = c2 )
+    l2 = ax.plot( xx, uExact( xx ), ls2, color = c2, alpha = alpha )
 
     xl += dx
     xh += dx
     xx = np.linspace( xl, xh, 100 )
-    l3 = ax.plot( xx, uExact( xx ), ls3, color = c3 )
+    l3 = ax.plot( xx, uExact( xx ), ls3, color = c3, alpha = alpha )
 
     return# l1, l2, l3
 
@@ -132,7 +132,7 @@ if ( __name__ == '__main__' ) :
     x3l = x2h
     x3h = x3l + dx
 
-    N = 4
+    N = 10
     NN = 100
     etaqN , wqN  = gaussxw( N  )
     etaqNN, wqNN = gaussxw( NN )
@@ -231,6 +231,7 @@ if ( __name__ == '__main__' ) :
     u2qt = modalToNodal( N, Cn )
     fig, ax = plt.subplots()
     plotBase( fig, ax)
+    plotExactSolution( fig, ax, '-', 'k', '-', 'k', '-', 'k', 0.5 )
     plotApproximateSolution( fig, ax, '-.', 'r', x1l, u1q )
     plotApproximateSolution( fig, ax, '-.', 'm', x2l, u2q )
     plotApproximateSolution( fig, ax, '-' , 'm', x2l, u2qt )

@@ -241,7 +241,6 @@
         \centering\includegraphics[width=0.8\textwidth]{./fig.sl_00.png}
       \onslide<2>
         $k = 9$
-
         \centering\includegraphics[width=0.8\textwidth]{./fig.sl_01.png}
       \onslide<3>
         \centering\includegraphics[width=0.8\textwidth]{./fig.sl_02.png}
@@ -266,10 +265,6 @@
         := C_{0} \, P_{0} + \tilde{C}_{1} \, P_{1}$$
         \centering\includegraphics[width=0.7\textwidth]{./fig.sl_06.png}
       \onslide<8>
-        $k = 9$
-
-        $\tilde{k} = 1$
-
         \centering\includegraphics[width=0.8\textwidth]{./fig.sl_07.png}
     \end{overprint}
   \end{figure}
@@ -296,10 +291,9 @@
     \item
       Proposed in \citet{qsy2016}
     \item
-      Define $\mathcal{G}$ as the (convex) set of
-      physically-admissible states;
-      i.e., positivity density and energy density, subluminal fluid velocity
-      (ideal EoS only)
+      Define $\mathcal{G}$ as the (convex) set of physically-admissible states
+      when using an ideal EoS
+      (positivity density and energy density, subluminal fluid velocity)
   \end{itemize}
 
   \begin{figure}
@@ -377,11 +371,6 @@
 
 \begin{frame}
 \frametitle{Conservative Interpolation (1D)}
-
-  \begin{itemize}
-    \item
-      \citet{sbc2015}
-  \end{itemize}
 
   Given a solution in the nodal points of a coarse element $K$,
   $\left\{U_{j}\right\}_{j=1}^{N}$,
