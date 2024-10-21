@@ -47,8 +47,11 @@
     \ul{t}oolkit for
     \ul{h}igh-\ul{or}der
     \ul{n}eutrino-r\ul{ad}iation hydr\ul{o}dynamics\\[1em]
+    \url{https://github.com/endeve/thornado}\\[1em]
 
   \end{center}
+
+  \Fontvi
 
   \begin{columns}[c]
 
@@ -58,14 +61,14 @@
         \item
           DG
         \item
-          SSPRK/IMEX
+          SSPRK/IMEX\footnote{\citet{ceh2019}}
         \item
           GR (xCFC)
         \item
           Hydro\footnote{\citet{ebd2019,dem2020,pbe2021}}
           (Valencia)
         \item
-          Neutrino transport\footnote{\citet{lec2021}} (M1)
+          Neutrino transport\footnote{\citet{lec2021,leh2025}} (M1)
         \item
           Interfaces to tabulated EoS/Opacities
           (weaklib: \url{https://github.com/starkiller-astro/weaklib})
@@ -86,6 +89,24 @@
       \end{itemize}
 
   \end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivation}
+
+  \begin{itemize}
+    \item
+      Capturing diffusion limit for neutrino transport without
+      ad-hoc methods
+    \item
+      High-order accuracy on a compact stencil
+    \item
+      An alternative simulation code than the standard FV/FD methods
+    \item
+      An experiment in applied math:
+      are DG methods effective for CCSN simulations?
+  \end{itemize}
 
 \end{frame}
 
@@ -202,14 +223,14 @@
   \begin{itemize}
     \item
       For hydro-only, strong-stabililty-preserving Runge--Kutta (SSPRK)
-      methods (e.g., see \citet{gst2001})
+      methods
       \begin{itemize}
         \item
           Convex combinations of forward-Euler timesteps
       \end{itemize}
     \item
-      For hydro+neutrinos, ImEx methods
-      (e.g., see \citet{pr2005})
+      For hydro+neutrinos, realizability-preserving ImEx methods
+      (\citet{ceh2019})
   \end{itemize}
 
 \end{frame}
@@ -247,9 +268,11 @@
         \centering\includegraphics[width=0.8\textwidth]{./fig.sl_02.png}
       \onslide<4>
         $$\bar{u}\left(t\right)
-        := \frac{1}{V\left(t\right)} \,
-        \int_{K} u_{h}\left(x,t\right) \, \sqrt{\gamma}\left(x,t\right) \, dx,
-        \ V\left(t\right) := \int_{K} \sqrt{\gamma}\left(x,t\right) \, dx$$
+        := \frac{1}{V_{h}\left(t\right)} \,
+        \int_{K} u_{h}\left(x,t\right) \,
+        \sqrt{\gamma_{h}}\left(x,t\right) \, dx,
+        \ V_{h}\left(t\right)
+        := \int_{K} \sqrt{\gamma_{h}}\left(x,t\right) \, dx$$
         \centering\includegraphics[width=0.7\textwidth]{./fig.sl_03.png}
       \onslide<5>
         $$u_{h}\left(x,t\right)
@@ -257,15 +280,27 @@
         = \sum\limits_{n=0}^{k} C_{n}\left(t\right) \, P_{n}\left(x\right)$$
         \centering\includegraphics[width=0.7\textwidth]{./fig.sl_04.png}
       \onslide<6>
-        $$\textcolor{red}{--:\bar{u}_{K}-\bar{u}_{K-1}}\hspace{2em}
-          \textcolor{blue}{--:\bar{u}_{K+1}-\bar{u}_{K}}$$
+        $$\textcolor{red}{a:=\bar{u}_{K}-\bar{u}_{K-1}}\hspace{2em}
+          \textcolor{blue}{b:=\bar{u}_{K+1}-\bar{u}_{K}}$$
         \centering\includegraphics[width=0.7\textwidth]{./fig.sl_05.png}
       \onslide<7>
+        \Fontvi
+        $$\tilde{C}_{1} := \mathrm{minmod}\left(a,b,C_{1}\right),$$
+        $$\mathrm{minmod}\left(a,b,C_{1}\right)
+        := \begin{cases}
+             \mathrm{sgn}\left(a\right)\times
+             \min\left(\left|a\right|,\left|b\right|,\left|C_{1}\right|\right),
+             & \mathrm{sgn}\left(a\right)=\mathrm{sgn}\left(b\right)
+               =\mathrm{sgn}\left(C_{1}\right) \\
+             0, & \mathrm{else}
+           \end{cases}$$
+        \centering\includegraphics[width=0.7\textwidth]{./fig.sl_05.png}
+      \onslide<8>
         $$\sum\limits_{n=1}^{k}C_{n} \, P_{n} = u_{h}
         \to \tilde{u}_{h} := \Lambda_{\textsc{sl}}\left(u_{h}\right)
         := C_{0} \, P_{0} + \tilde{C}_{1} \, P_{1}$$
         \centering\includegraphics[width=0.7\textwidth]{./fig.sl_06.png}
-      \onslide<8>
+      \onslide<9>
         $k = 9$
 
         $\tilde{k} = 1$
@@ -277,16 +312,40 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Troubled Cell Indicator}
+\frametitle{Troubled Cell Indicator \citep{fs2017}}
 
-  Proposed in \citet{fs2017}
+  \begin{figure}
+    \begin{overprint}
+      \onslide<1>
+        \centering\includegraphics[width=0.8\textwidth]{./fig.tci_00.png}
+      \onslide<2>
+        $k = 2$
 
-  \begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig.TCI.png}
+        \centering\includegraphics[width=0.8\textwidth]{./fig.tci_01.png}
+      \onslide<3>
+        \centering\includegraphics[width=0.7\textwidth]{./fig.tci_02.png}
+      \onslide<4>
+        \textcolor{red}{$u_{h}\left(x,t\right)
+        = \sum\limits_{i=1}^{k+1} u_{i} \, \ell_{i}\left(x\right)$},
+        \textcolor{blue}{$u_{h}\left(x,t\right)
+        = \sum\limits_{i=1}^{k+1} u_{i} \, \ell_{i}\left(x\right)$}
+
+        \centering\includegraphics[width=0.7\textwidth]{./fig.tci_03.png}
+      \onslide<5>
+        \centering\includegraphics[width=0.7\textwidth]{./fig.tci_04.png}
+      \onslide<6>
+        $I_{K} :=
+        \left(\max\limits_{j\in\left\{0,\cdots,2^{d}\right\}}
+        \left(\left|\bar{u}_{j}\right|\right)\right)^{-1}
+        \sum\limits_{j=1}^{2^{d}}
+        \left|\bar{u}_{0}-\bar{\bar{u}}_{j}\right|$
+
+        \centering\includegraphics[width=0.7\textwidth]{./fig.tci_05.png}
+    \end{overprint}
   \end{figure}
 
 \end{frame}
+
 
 \newcommand{\lbel}{\Lambda_{\textsc{bel}}}
 \begin{frame}
@@ -296,10 +355,9 @@
     \item
       Proposed in \citet{qsy2016}
     \item
-      Define $\mathcal{G}$ as the (convex) set of
-      physically-admissible states;
-      i.e., positivity density and energy density, subluminal fluid velocity
-      (ideal EoS only)
+      Define $\mathcal{G}$ as the set of physically-admissible states;
+      i.e., positivite density and energy density, subluminal fluid velocity
+      (for an ideal EoS, $\mathcal{G}$ is convex)
   \end{itemize}
 
   \begin{figure}
@@ -370,42 +428,130 @@
 
   \begin{figure}[htb!]
     \centering
-    \includegraphics[width=0.7\textwidth]{fig.MeshRefinement_2D.png}
+    \includegraphics[width=0.7\textwidth]{amrex.png}
   \end{figure}
+
+  \begin{center}
+    \url{https://github.com/AMReX-Codes/amrex}
+  \end{center}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Conservative Interpolation (1D)}
+\frametitle{Interpolation}
 
-  \begin{itemize}
-    \item
-      \citet{sbc2015}
-  \end{itemize}
+  \begin{columns}[c]
 
-  Given a solution in the nodal points of a coarse element $K$,
-  $\left\{U_{j}\right\}_{j=1}^{N}$,
-  define the solution in the nodal points of the $j$th
-  ($j\in\left\{1,2\right\}$)
-  fine element $k^{\left(j\right)}$,
-  $\left\{u_{i}^{\left(j\right)}\right\}_{i=1}^{N}$
-  via the minimization of an $L^{2}$-projection:
+    \column{0.4\textwidth}
 
-  $$\forall i \in \left\{1,\cdots,N\right\}:
-  \min\limits_{\tilde{u}_{i}^{\left(j\right)}}
-  \int_{k^{\left(j\right)}}\left(\tilde{U}_{h}
-  -\tilde{u}_{h}^{\left(j\right)}\right)^{2}dx,$$
+      \begin{figure}[htb!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig.amrElement.png}
+      \end{figure}
 
-  where $\tilde{U} := \sqrt{\gamma} \, U$.
-  For the geometry fields, we use the same procedure but do not pre-multiply
-  with $\sqrt{\gamma}$.
+    \column{0.6\textwidth}
+
+    Given $U_{h}\left(x,t\right)
+    = \sum\limits_{i\in\mathcal{N}} U_{i}\left(t\right) \,
+    \ell_{i}\left(x\right)$,
+    how to compute \textcolor{blue}{$u_{h}^{\left(j\right)}\left(x,t\right)
+    = \sum\limits_{i\in\mathcal{N}}
+    u_{i}^{\left(j\right)}\left(t\right) \,
+    \ell_{i}^{\left(j\right)}\left(x\right)$},
+    or vice-versa?
+    ($\mathcal{N}$ is the set of all grid-points for any given element.)
+
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Conservative Interpolation}
+
+  \begin{columns}[c]
+
+    \column{0.4\textwidth}
+
+      \begin{figure}[htb!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig.amrElement.png}
+      \end{figure}
+
+    \column{0.6\textwidth}
+
+      \begin{itemize}
+        \item
+          \citet{sbc2015}
+      \end{itemize}
+
+      Given a solution on a coarse element $K$, $U_{h}$,
+      define the solution on the $j$th ($j\in\left\{1,\cdots,2^{d}\right\}$)
+      fine element $k^{\left(j\right)}$,
+      \textcolor{blue}{$u_{h}^{\left(j\right)}$}
+      via the minimization of an $L^{2}$-projection:
+
+      $$\forall i \in \mathcal{N}:
+      \min\limits_{\textcolor{blue}{\tilde{u}_{i}^{\left(j\right)}}}
+      \int_{k^{\left(j\right)}}\left(\tilde{U}_{h}
+      -\textcolor{blue}{\tilde{u}_{h}^{\left(j\right)}}\right)^{2}d^{d}x,$$
+
+      where $\tilde{U} := \sqrt{\gamma} \, U$.
+      For the geometry fields, we use the same procedure but do not pre-multiply
+      with $\sqrt{\gamma}$.
+
+  \end{columns}
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Flux Corrections}
 
-Show what we store in the flux register
+  \begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig.MeshRefinement_2D.png}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Flux Corrections}
+
+  \begin{columns}[c]
+
+    \column{0.4\textwidth}
+
+      \begin{figure}[htb!]
+        \centering
+        \includegraphics[width=0.9\textwidth]{fig.amrElement_facePoints.png}
+      \end{figure}
+
+    \column{0.6\textwidth}
+
+      The numerical flux across, say,
+      the $x^{1}$ interface on the right side of an
+      element for a 2D problem with no gravity and Cartesian coordinates
+      is given by
+
+      \Fontvi
+
+      \begin{align*}
+        &\int_{K^{2}} \widehat{F}^{1}\left(U_{h}^{-},U_{h}^{+}\right) \,
+        \ell_{k_{1}}\left(x^{1}_{\textsc{h}}\right) \,
+        \ell_{k_{2}}\left(x^{2}\right) \, dx^{2} \\
+        &= \sum\limits_{j\in\left\{2,4\right\}}
+        \int_{k_{\left(j\right)}^{2}}
+        \widehat{F}^{1}\left(U_{h}^{-},U_{h}^{+}\right) \,
+        \ell_{k_{1}}\left(x^{1}_{\textsc{h}}\right) \,
+        \ell_{k_{2}}\left(x^{2}\right) \, dx^{2} \\
+        &:= \sum\limits_{j\in\left\{2,4\right\}}
+        \int_{k_{\left(j\right)}^{2}}
+        \widehat{F}^{1}\left(u^{\left(j\right),-}_{h},
+        u^{\left(j\right),+}_{h}\right) \,
+        \ell_{k_{1}}\left(x^{1}_{\textsc{h}}\right) \,
+        \ell_{k_{2}}\left(x^{2}\right) \, dx^{2}
+      \end{align*}
+
+  \end{columns}
 
 \end{frame}
 

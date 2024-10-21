@@ -15,8 +15,8 @@ def uExact( x ):
             y.append( np.tanh( ( x[i] - 0.01 ) / 0.01 ) \
                         * np.exp( -( x[i] + 0.01 )**2 / 0.1 ) )
         else:
-            y.append( np.tanh( ( x[i] - 0.01 ) / 0.01 ))# \
-#                        * np.exp( -( x[i] - 0.01 )**2 / 0.1 ) )
+            y.append( np.tanh( ( x[i] - 0.01 ) / 0.01 ) \
+                        * ( 0 + np.exp( -( x[i] - 0.01 )**2 / 4.0 ) ) )
 
     return np.array( y )
 
@@ -198,6 +198,8 @@ if ( __name__ == '__main__' ) :
     plotCellAverage( fig, ax, '-' , 'm', x2l, u2K )
     plotCellAverage( fig, ax, '-' , 'b', x3l, u3K )
     ax.plot( x2, uM, 'm-' )
+    ax.text( -0.4, u2K+0.05, r'$C_{0}$', color = 'm', fontsize = 14 )
+    ax.text( 0.15, u2K+0.2, r'$C_{1}$', color = 'm', fontsize = 14 )
     plt.savefig( 'fig.sl_04.png', dpi = 300 )
     plt.show()
     plt.close()
@@ -210,6 +212,11 @@ if ( __name__ == '__main__' ) :
     ax.plot( x2, uM, 'm-' )
     ax.plot( [x1l+0.5*dx,x1h+0.5*dx], [u1K,u2K], 'r--' )
     ax.plot( [x2l+0.5*dx,x2h+0.5*dx], [u2K,u3K], 'b--' )
+    d = 5.0e-1 * abs( u2K - u1K )
+    ax.text( x1h-0.1, u1K+d, r'$a$', color = 'r', fontsize = 14 )
+    d = 9.0e-1 * abs( u3K - u2K )
+    ax.text( x3l+0.1, u3K-d, r'$b$', color = 'b', fontsize = 14 )
+    ax.text( 0.15, u2K+0.2, r'$C_{1}$', color = 'm', fontsize = 14 )
     plt.savefig( 'fig.sl_05.png', dpi = 300 )
     plt.show()
     plt.close()
@@ -222,6 +229,11 @@ if ( __name__ == '__main__' ) :
     ax.plot( x2, u2M, 'm-' )
     ax.plot( [x1l+0.5*dx,x1h+0.5*dx], [u1K,u2K], 'r--' )
     ax.plot( [x2l+0.5*dx,x2h+0.5*dx], [u2K,u3K], 'b--' )
+    d = 5.0e-1 * abs( u2K - u1K )
+    ax.text( x1h-0.1, u1K+d, r'$a$', color = 'r', fontsize = 14 )
+    d = 9.0e-1 * abs( u3K - u2K )
+    ax.text( x3l+0.1, u3K-d, r'$b$', color = 'b', fontsize = 14 )
+    ax.text( 0.1, u2K+0.15, r'$\tilde{C}_{1}=b$', color = 'm', fontsize = 14 )
     plt.savefig( 'fig.sl_06.png', dpi = 300 )
     plt.show()
     plt.close()
